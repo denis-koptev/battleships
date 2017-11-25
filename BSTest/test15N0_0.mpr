@@ -1,0 +1,14 @@
+mscdocument test15N0;
+msc test15N0;
+SIMULATOR: instance;
+STRATEGY: instance;
+SIMULATOR: out /*{@0}*/INITDATACOMPLETE,1 to STRATEGY comment '';
+STRATEGY: in /*{@0}*/INITDATACOMPLETE,1 from SIMULATOR;
+SIMULATOR: out /*{@0}*/SHIPSCURRENTSTATE,2(1,"(. (. 1, 1, DESTROYER, 0, EAST, 50, (. 5, 1 .), (: 0, 0, 0, 0 :) .) .)") to STRATEGY comment '';
+STRATEGY: in /*{@0}*/SHIPSCURRENTSTATE,2(1,"(. (. 1, 1, DESTROYER, 0, EAST, 50, (. 5, 1 .), (: 0, 0, 0, 0 :) .) .)") from SIMULATOR;
+SIMULATOR: out /*{@0}*/STARTSIMULATION,3(0) to STRATEGY comment '';
+STRATEGY: in /*{@0}*/STARTSIMULATION,3(0) from SIMULATOR;
+all: condition /*{@0}*/ERROR comment '<!TAT_ERR_TIMEOUT(Trace0,Event4)!>';
+SIMULATOR: endinstance;
+STRATEGY: endinstance;
+endmsc;

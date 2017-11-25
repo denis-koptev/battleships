@@ -1,0 +1,4 @@
+OrgMainWindow 110 165 960 593 C:\Battleships\BattleShips\BattleShips.sdt
+SDLEWindow 88 132 960 867 3 C:\Battleships\Packages\BasicTypes.sun
+TextEWindow 44 66 960 593 "" C:\Battleships\Config\ConfigFile.pr
+MSCEWindow 154 231 960 593 1 %unconnected%

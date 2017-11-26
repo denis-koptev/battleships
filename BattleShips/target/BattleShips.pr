@@ -7692,20 +7692,28 @@ connect St1MsgInt and chStMsg;
 endblock Strategy1;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\Main.spr,4)*/
 process Main1;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\Main.spr(1),665(65,10))*/
+synonym 
+   EightQuaterX Integer = 1*MaxXCoordinate/10,
+   EightQuaterY Integer = 7*MaxYCoordinate/10,
+   SeventhQuaterX Integer = 2*MaxXCoordinate/10,
+   SeventhQuaterY Integer = 9*MaxYCoordinate/10,
+   SixthQuaterX Integer = 8*MaxXCoordinate/10,
+   SixthQuaterY Integer = 9*MaxYCoordinate/10,
+   FifthQuaterX Integer = 9*MaxXCoordinate/10,
+   FifthQuaterY Integer = 7*MaxYCoordinate/10,
+   FourthQuaterX Integer = 9*MaxXCoordinate/10,
+   FourthQuaterY Integer = 3*MaxYCoordinate/10,
+   ThirdQuaterX Integer = 8*MaxXCoordinate/10,
+   ThirdQuaterY Integer = MaxYCoordinate/10,
+   SecondQuaterX Integer = 2*MaxXCoordinate/10,
+   SecondQuaterY Integer = MaxYCoordinate/10,
+   FirstQuaterX Integer = MaxXCoordinate/10,
+   FirstQuaterY Integer = 3*MaxYCoordinate/10;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\Main.spr(1),143(5,25))*/
 imported
     gWeaponryCharacter tArrayWeaponryCharacter,
     gShipsCharacter tArrayShipsCharacter;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\Main.spr(1),665(90,25))*/
-synonym 
-   FirstQuaterX Integer = 3*MaxXCoordinate/4,
-   FirstQuaterY Integer = 3*MaxYCoordinate/4,
-   SecondQuaterX Integer = 3*MaxXCoordinate/4,
-   SecondQuaterY Integer = MaxYCoordinate/4,
-   ThirdQuaterX Integer = MaxXCoordinate/4,
-   ThirdQuaterY Integer = MaxYCoordinate/4,
-   FourthQuaterX Integer = MaxXCoordinate/4,
-   FourthQuaterY Integer = 3*MaxYCoordinate/4;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\Main.spr(1),506(5,40))*/
 newtype tOrderType
  literals
@@ -7893,6 +7901,21 @@ stop /*#E*/
 ;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\Main.spr(3),230(120,10))*/
 endstate;
+
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\Main.spr(1),794(135,50))*/
+/*   Inner (small) trajectory points:
+   sFirstQuaterX Integer = 3*MaxXCoordinate/10,
+   sFirstQuaterY Integer = 5*MaxYCoordinate/10,
+   sSecondQuaterX Integer = 4*MaxXCoordinate/10,
+   sSecondQuaterY Integer = 7*MaxYCoordinate/10,
+   sThirdQuaterX Integer = 6*MaxXCoordinate/10,
+   sThirdQuaterY Integer = 7*MaxYCoordinate/10,
+   sFourthQuaterX Integer = 7*MaxXCoordinate/10,
+   sFourthQuaterY Integer = 5*MaxYCoordinate/10,
+   sFifthQuaterX Integer = 6*MaxXCoordinate/10,
+   sFifthQuaterY Integer = 3*MaxYCoordinate/10,
+   sSixthQuaterX Integer = 4*MaxXCoordinate/10,
+   sSixthQuaterY Integer = 3*MaxYCoordinate/10; */
 
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\Main.spr(2),641(5,25))*/
 /* Характеристики кораблей 
@@ -8371,7 +8394,7 @@ Solv1:
 task {/*#E*/ 
  
 CommandTo_
-Ship(index)!OrderType := _RIGHT;
+Ship(index)!OrderType := _LEFT;
 CommandToShip(index)!isSet := true;
 CollisionType := call isCollision;
 };
@@ -8387,7 +8410,7 @@ output /*#E*/
  
 OrderTurnRequest(
 ShipsCurrState(index)!ShipId, 
-StrategyID, RIGHT)  
+StrategyID, LEFT)  
 ;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\SolveCollision.spd(2),470(65,75))*/
 return /*#E*/ 
@@ -8398,7 +8421,7 @@ return /*#E*/
 task {/*#E*/ 
  
 CommandTo_
-Ship(index)!OrderType := _LEFT;
+Ship(index)!OrderType := _RIGHT;
 CommandToShip(index)!isSet := true;
 CollisionType := call isCollision;
 };
@@ -8414,7 +8437,7 @@ output /*#E*/
  
 OrderTurnRequest(
 ShipsCurrState(index)!ShipId, 
-StrategyID, LEFT)  
+StrategyID, RIGHT)  
 ;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\SolveCollision.spd(2),350(65,120))*/
 return /*#E*/ 
@@ -9959,75 +9982,111 @@ endnewtype;
 dcl 
    d Dist,
    count, i, min Integer;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),128(30,25))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),128(30,10))*/
 start /*#E*/ 
 ;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),125(30,40))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),125(30,25))*/
 task {/*#E*/ 
  
 d(1) := call getDistance(MyCenter!x,MyCenter!y,FirstQuaterX, FirstQuaterY);
 d(2) := call getDistance(MyCenter!x,MyCenter!y,SecondQuaterX, SecondQuaterY);
 d(3) := call getDistance(MyCenter!x,MyCenter!y,ThirdQuaterX, ThirdQuaterY);
 d(4) := call getDistance(MyCenter!x,MyCenter!y,FourthQuaterX, FourthQuaterY);
+d(5) := call getDistance(MyCenter!x,MyCenter!y,FifthQuaterX,FifthQuaterY);
+d(6) := call getDistance(MyCenter!x,MyCenter!y,SixthQuaterX,SixthQuaterY);
+d(7) := call getDistance(MyCenter!x,MyCenter!y,SeventhQuaterX,SeventhQuaterY);
+d(8) := call getDistance(MyCenter!x,MyCenter!y,EightQuaterX,EightQuaterY);
 min := d(1); count:=1;
 };
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),353(30,60))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),353(30,40))*/
 task {/*#E*/ 
  
-for (i:=2,i<=4,i+1){
+for (i:=2,i<=8,i+1){
  if (d(i)<=min) {
    min := d(i);
    count := i; } 
 }
 };
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),308(30,80))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),308(20,70))*/
 decision /*#E*/ 
 count;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),332(72,85))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),449(122,82))*/
+(8):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),443(110,95))*/
+task {/*#E*/ 
+ 
+HeadingTarget !x:= EightQuaterX;
+HeadingTarget !y:= EightQuaterY;
+};
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),446(107,82))*/
+(7):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),437(95,110))*/
+task {/*#E*/ 
+ 
+HeadingTarget !x:= SeventhQuaterX;
+HeadingTarget !y:= SeventhQuaterY;
+};
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),419(92,82))*/
+(6):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),416(80,125))*/
+task {/*#E*/ 
+ 
+HeadingTarget !x:= SixthQuaterX;
+HeadingTarget !y:= SixthQuaterY;
+};
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),404(77,82))*/
+(5):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),401(65,140))*/
+task {/*#E*/ 
+ 
+HeadingTarget !x:= FifthQuaterX;
+HeadingTarget !y:= FifthQuaterY;
+};
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),332(62,82))*/
 (4):
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),305(60,90))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),305(50,155))*/
 task {/*#E*/ 
  
 HeadingTarget !x:= FourthQuaterX;
 HeadingTarget !y:= FourthQuaterY;
 };
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),329(57,90))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),329(47,82))*/
 (3):
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),299(45,105))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),299(35,170))*/
 task {/*#E*/ 
  
 HeadingTarget !x:= ThirdQuaterX;
 HeadingTarget !y:= ThirdQuaterY;
 };
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),326(42,90))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),326(32,82))*/
 (2):
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),293(30,120))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),293(20,185))*/
 task {/*#E*/ 
  
 HeadingTarget !x:= SecondQuaterX;
 HeadingTarget !y:= SecondQuaterY;
 };
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),323(27,90))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),323(17,82))*/
 (1):
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),287(15,135))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),287(5,200))*/
 task {/*#E*/ 
  
 HeadingTarget !x:= FirstQuaterX;
 HeadingTarget !y:= FirstQuaterY;
 };
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),308(30,80))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),308(20,70))*/
 enddecision;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),245(35,150))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd(1),245(25,215))*/
 return /*#E*/ 
 ;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\FindStartPoint.spd,4)*/
 endprocedure FindStartPoint;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\SearchHeadingTarget.spd,4)*/
 procedure FindHeadingTarget;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\SearchHeadingTarget.spd(1),116(55,25))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\SearchHeadingTarget.spd(1),116(55,5))*/
 start /*#E*/ 
 ;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\SearchHeadingTarget.spd(1),137(55,50))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\SearchHeadingTarget.spd(1),137(55,25))*/
 task {/*#E*/ 
  
 if ((HeadingTarget!x = FirstQuaterX) AND 
@@ -10047,12 +10106,40 @@ else {
          HeadingTarget!x :=  FourthQuaterX;
          HeadingTarget!y :=  FourthQuaterY;
     }  
-    else 
-     if ((HeadingTarget!x = FourthQuaterX) AND 
-         (HeadingTarget!y = FourthQuaterY)) {
-          HeadingTarget!x :=  FirstQuaterX;
-          HeadingTarget!y :=  FirstQuaterY;
-     }
+    else {
+      if ((HeadingTarget!x = FourthQuaterX) AND 
+          (HeadingTarget!y = FourthQuaterY)) {
+           HeadingTarget!x :=  FifthQuaterX;
+           HeadingTarget!y :=  FifthQuaterY;
+      }
+      else {
+        if ((HeadingTarget!x = FifthQuaterX) AND
+            (HeadingTarget!y = FifthQuaterY)) {
+             HeadingTarget!x := SixthQuaterX;
+             HeadingTarget!y := SixthQuaterY;
+        }  
+        else {
+          if ((HeadingTarget!x = SixthQuaterX) AND
+              (HeadingTarget!y = SixthQuaterY)) {
+               HeadingTarget!x := SeventhQuaterX;
+               HeadingTarget!y := SeventhQuaterY;
+          }
+          else {
+            if ((HeadingTarget!x = SeventhQuaterX) AND
+                (HeadingTarget!y = SeventhQuaterY)) {
+                 HeadingTarget!x := EightQuaterX;
+                 HeadingTarget!y := EightQuaterY;
+            }
+            else
+              if ((HeadingTarget!x = EightQuaterX) AND
+                  (HeadingTarget!y = EightQuaterY)) {
+                   HeadingTarget!x := FirstQuaterX;
+                   HeadingTarget!y := FirstQuaterY;
+              }
+          }
+        }
+      }
+    }  
   }
 }
 };

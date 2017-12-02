@@ -7709,7 +7709,20 @@ synonym
    SecondQuaterX Integer = 2*MaxXCoordinate/10,
    SecondQuaterY Integer = MaxYCoordinate/10,
    FirstQuaterX Integer = MaxXCoordinate/10,
-   FirstQuaterY Integer = 3*MaxYCoordinate/10;
+   FirstQuaterY Integer = 3*MaxYCoordinate/10,
+
+   sSixthQuaterX Integer = 3*MaxXCoordinate/10,
+   sSixthQuaterY Integer = 5*MaxYCoordinate/10,
+   sFifthQuaterX Integer = 4*MaxXCoordinate/10,
+   sFifthQuaterY Integer = 7*MaxYCoordinate/10,
+   sFourthQuaterX Integer = 6*MaxXCoordinate/10,
+   sFourthQuaterY Integer = 7*MaxYCoordinate/10,
+   sThirdQuaterX Integer = 7*MaxXCoordinate/10,
+   sThirdQuaterY Integer = 5*MaxYCoordinate/10,
+   sSecondQuaterX Integer = 6*MaxXCoordinate/10,
+   sSecondQuaterY Integer = 3*MaxYCoordinate/10,
+   sFirstQuaterX Integer = 4*MaxXCoordinate/10,
+   sFirstQuaterY Integer = 3*MaxYCoordinate/10;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\Main.spr(1),143(5,25))*/
 imported
     gWeaponryCharacter tArrayWeaponryCharacter,
@@ -7747,9 +7760,12 @@ dcl
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\Main.spr(2),620(5,80))*/
 dcl 
    MyCenter tCoordinates,
-   Tick,NumMyShips, minSpeed Integer,
+   MyCenterInternal tCoordinates,
+   Tick,NumMyShips, minSpeed,
+   minSpeedInternal, Num, NumInternal Integer,
    flagFight Boolean := true,
    HeadingTarget tCoordinates,
+   HeadingTargetInternal tCoordinates,
    ShipsCurrentState tStringShipCurrentState,
    CommandToShip tArrayCommand,
    StrategyID tStrategyId;
@@ -7947,17 +7963,43 @@ NumMyShips := length(ShipsCurrentState);
 TempCenterX := 0;
 TempCenterY := 0;
 minSpeed := ShipsCharacter(ShipsCurrentState(1)!TypeShip)!MaxSpeed;
-for (i:=1, i<=NumMyShips, i+1){
+
+Num := NumMyShips;
+NumInternal := 0;
+if (NumMyShips > 2) {
+   NumInternal := NumMyShips / 3;
+   Num := NumMyShips - NumInternal;
+}
+
+for (i:=1, i<=Num, i+1){
   CommandToShip(i)!isSet := false;
   CommandToShip(i)!Fire!List := empty;
-  TempCenterX := TempCenterX + float(ShipsCurrentState(i)!Coordinates!x)/float(NumMyShips);
-  TempCenterY := TempCenterY + float(ShipsCurrentState(i)!Coordinates!y)/float(NumMyShips);
+  TempCenterX := TempCenterX + float(ShipsCurrentState(i)!Coordinates!x)/float(Num);
+  TempCenterY := TempCenterY + float(ShipsCurrentState(i)!Coordinates!y)/float(Num);
   if (ShipsCharacter(ShipsCurrentState(i)!TypeShip)!MaxSpeed <= minSpeed) {
     minSpeed := ShipsCharacter(ShipsCurrentState(i)!TypeShip)!MaxSpeed;
   }
 }
 MyCenter!x := fix(TempCenterX);
 MyCenter!y := fix(TempCenterY);
+
+if (NumInternal > 0) {
+   TempCenterX := 0;
+   TempCenterY := 0;
+   minSpeedInternal := ShipsCharacter(ShipsCurrentState(Num+1)!TypeShip)!MaxSpeed;
+
+   for (i:=1+Num, i<=NumInternal, i+1) {
+     CommandToShip(i)!isSet := false;
+     CommandToShip(i)!Fire!List := empty;
+     TempCenterX := TempCenterX + float(ShipsCurrentState(i)!Coordinates!x)/float(NumInternal);
+     TempCenterY := TempCenterY + float(ShipsCurrentState(i)!Coordinates!y)/float(NumInternal);
+     if (ShipsCharacter(ShipsCurrentState(i)!TypeShip)!MaxSpeed <= minSpeed) {
+       minSpeedInternal := ShipsCharacter(ShipsCurrentState(i)!TypeShip)!MaxSpeed;
+     }
+   }
+   MyCenterInternal!x := fix(TempCenterX);
+   MyCenterInternal!y := fix(TempCenterY);   
+}
 };
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\UpdateShipParams.spd(1),119(30,90))*/
 return /*#E*/ 
@@ -8014,86 +8056,87 @@ endnewtype;
 dcl
    index Integer := 1,
    CollisionType tCollision;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),1025(85,20))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),1025(70,5))*/
 procedure EnemyFound referenced 
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),887(135,20))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),887(120,5))*/
 /* Реализация стратеги в условиях 
 видимости вражеских кораблей */
 ;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),926(85,35))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),926(70,20))*/
 procedure EnemyNotFound referenced 
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),881(135,35))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),881(120,20))*/
 /* Реализация стратегии при 
-отсутствии 
-в поле видимости стратегии 
+отсутствии в поле видимости стратегии 
 вражеских кораблей */
 ;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),872(85,55))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),872(70,35))*/
 procedure NextPosition referenced 
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),869(135,55))*/
-/* Определение прогнозируемого 
-положения корабля на 
-следующем такте по его текущей 
-скорости, направлению и
- текущим координатам */
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),869(120,35))*/
+/* Определение прогнозируемого положения 
+корабля на следующем такте по его текущей  
+скорости, направлению и текущим координатам */
 ;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),866(85,75))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),866(70,50))*/
 procedure NextDirection referenced 
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),863(135,75))*/
-/* Определение нового 
-направления корабля по 
-текущему направлению и 
-повороту */
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),863(120,50))*/
+/* Определение нового направления корабля 
+по текущему направлению и повороту */
 ;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),860(85,95))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),860(70,65))*/
 procedure NewHeadingChange referenced 
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),857(135,95))*/
-/* Определение стороны 
-поворота корабля для 
-координирования 
-движения в сторону цели */
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),857(120,65))*/
+/* Определение стороны поворота корабля для 
+координирования движения в сторону цели */
 ;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),854(85,115))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),854(70,80))*/
 procedure isCollision referenced 
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),851(135,115))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),851(120,80))*/
 /* Определение коллизии */
 ;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),848(85,130))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),848(70,95))*/
 procedure SolveCollision referenced 
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),845(135,130))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),845(120,95))*/
 /* Разрешение коллизии */
 ;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),917(85,145))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),917(70,110))*/
 procedure NextShipState referenced 
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),920(135,145))*/
-/* Возвращает предсказуемое
-состояние корабля
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),920(120,110))*/
+/* Возвращает предсказуемое состояние корабля
 на следующем такте симуляции */
 ;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),1274(85,160))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),1274(70,125))*/
 procedure OutputOrder referenced 
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),1277(135,160))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),1277(120,125))*/
 /* Выдача команд кораблям */
 ;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),1352(85,175))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),1352(70,140))*/
 procedure FindHeadingTarget referenced 
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),1349(135,175))*/
-/* Определение очередного угла
-карты для движения туда
-кораблей при поиске
-противника  */
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),1349(120,140))*/
+/* Определение очередного угла карты для 
+движения туда кораблей при поиске противника  */
 ;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),1346(85,195))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),1346(70,155))*/
 procedure FindStartPoint referenced 
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),1343(135,195))*/
-/* Определение начальной точки
-двжения кораблей  для поиска 
-противника */
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),1343(120,155))*/
+/* Определение начальной точки двжения кораблей 
+для поиска противника */
 ;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),2000(85,210))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),2000(70,170))*/
 procedure OnLand referenced 
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),2003(135,210))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),2003(120,170))*/
 /* Уход с мели */
+;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),2090(70,185))*/
+procedure FindStartInternalPoint referenced 
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),2093(120,185))*/
+/* Определение начальной точки движения 
+кораблей по внутренней траектории */
+;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),2099(70,200))*/
+procedure FindHeadingInternalTarget referenced 
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(1),2102(120,200))*/
+/* Определение очередного угла карты для движения 
+кораблей по внутренней траектории */
 ;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(2),137(75,30))*/
 start /*#E*/ 
@@ -8122,6 +8165,7 @@ task {/*#E*/
 if (flagFight=true) {
   flagFight := false;
   call FindStartPoint;
+  call FindStartInternalPoint;
 }
 };
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(2),1361(95,100))*/
@@ -8143,11 +8187,34 @@ call /*#E*/
  
 FindHeadingTarget
 ;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(2),1598(107,110))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(2),2111(107,112))*/
 (false):
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(2),1361(95,100))*/
 enddecision;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(2),1595(100,135))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(2),2108(95,140))*/
+decision /*#E*/ 
+ 
+ ((MyCenterInternal!x <=
+   HeadingTargetInternal!x + 5) AND
+    (MyCenterInternal!x >=
+   HeadingTargetInternal!x  - 5) AND 
+    (MyCenterInternal!y <=
+   HeadingTargetInternal!y + 5) AND 
+    (MyCenterInternal!y>=
+   HeadingTargetInternal!y  - 5)) 
+;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(2),2141(87,147))*/
+(true):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(2),2135(80,155))*/
+call /*#E*/ 
+ 
+FindHeadingInternalTarget
+;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(2),2156(107,152))*/
+(false):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(2),2108(95,140))*/
+enddecision;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(2),1595(100,180))*/
 join /*#E*/ 
 Step2;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\StrategyStep.spd(2),209(75,50))*/
@@ -9217,7 +9284,7 @@ procedure EnemyNotFound
 ; fpar
   in/out ShCurrSt tShipCurrentState,
   in k Integer;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\EnemyNotFound.spd(1),902(125,5))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\EnemyNotFound.spd(1),902(140,5))*/
 dcl
    ChangeDirection tTurnDirection,
    accel Integer,
@@ -9225,16 +9292,37 @@ dcl
    MaxAccel tSCMaxAcceleration,
    factorAccel tFactorAcceleration;
    
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\EnemyNotFound.spd(1),116(60,20))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\EnemyNotFound.spd(1),116(60,5))*/
 start /*#E*/ 
+ 
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\EnemyNotFound.spd(1),938(145,55))*/
+/* Фукнции передается лишь один корабль.
+Цикл с перебором - извне 
+(Step2 - когда нет противника) */
 ;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\EnemyNotFound.spd(1),338(60,40))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\EnemyNotFound.spd(1),941(60,20))*/
+decision /*#E*/ 
+k > Num;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\EnemyNotFound.spd(1),962(12,27))*/
+(true):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\EnemyNotFound.spd(1),956(5,35))*/
+task {/*#E*/ 
+ 
+ChangeDirection := 
+ call NewHeadingChange(ShCurrSt,HeadingTargetInternal);
+ShipName := ShCurrSt!TypeShip;
+};
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\EnemyNotFound.spd(1),950(102,22))*/
+(false):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\EnemyNotFound.spd(1),338(90,35))*/
 task {/*#E*/ 
  
 ChangeDirection := 
  call NewHeadingChange(ShCurrSt,HeadingTarget);
 ShipName := ShCurrSt!TypeShip;
 };
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\EnemyNotFound.spd(1),941(60,20))*/
+enddecision;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\EnemyNotFound.spd(1),554(60,65))*/
 decision /*#E*/ 
  
@@ -10236,6 +10324,151 @@ return /*#E*/
 enddecision;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\OnLand.spd,4)*/
 endprocedure OnLand;
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindStartInternalPoint.spd,4)*/
+procedure FindStartInternalPoint;
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindStartInternalPoint.spd(1),602(120,5))*/
+dcl 
+   d Dist,
+   count, i, min Integer;
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindStartInternalPoint.spd(1),674(150,5))*/
+newtype Dist 
+   Array(Integer,Integer)
+endnewtype;
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindStartInternalPoint.spd(1),671(45,10))*/
+start /*#E*/ 
+;
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindStartInternalPoint.spd(1),668(45,25))*/
+task {/*#E*/ 
+ 
+d(1) := call getDistance(MyCenterInternal!x,MyCenterInternal!y,sFirstQuaterX, sFirstQuaterY);
+d(2) := call getDistance(MyCenterInternal!x,MyCenterInternal!y,sSecondQuaterX, sSecondQuaterY);
+d(3) := call getDistance(MyCenterInternal!x,MyCenterInternal!y,sThirdQuaterX, sThirdQuaterY);
+d(4) := call getDistance(MyCenterInternal!x,MyCenterInternal!y,sFourthQuaterX, sFourthQuaterY);
+d(5) := call getDistance(MyCenterInternal!x,MyCenterInternal!y,sFifthQuaterX,sFifthQuaterY);
+d(6) := call getDistance(MyCenterInternal!x,MyCenterInternal!y,sSixthQuaterX,sSixthQuaterY);
+min := d(1); count:=1;
+};
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindStartInternalPoint.spd(1),662(45,40))*/
+task {/*#E*/ 
+ 
+for (i:=2,i<=6,i+1){
+ if (d(i)<=min) {
+   min := d(i);
+   count := i; } 
+}
+};
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindStartInternalPoint.spd(1),656(45,60))*/
+decision /*#E*/ 
+count;
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindStartInternalPoint.spd(1),710(117,72))*/
+(6):
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindStartInternalPoint.spd(1),638(105,80))*/
+task {/*#E*/ 
+ 
+HeadingTargetInternal !x:= sSixthQuaterX;
+HeadingTargetInternal !y:= sSixthQuaterY;
+};
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindStartInternalPoint.spd(1),719(102,72))*/
+(5):
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindStartInternalPoint.spd(1),632(90,95))*/
+task {/*#E*/ 
+ 
+HeadingTargetInternal !x:= sFifthQuaterX;
+HeadingTargetInternal !y:= sFifthQuaterY;
+};
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindStartInternalPoint.spd(1),728(87,72))*/
+(4):
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindStartInternalPoint.spd(1),626(75,110))*/
+task {/*#E*/ 
+ 
+HeadingTargetInternal !x:= sFourthQuaterX;
+HeadingTargetInternal !y:= sFourthQuaterY;
+};
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindStartInternalPoint.spd(1),737(72,72))*/
+(3):
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindStartInternalPoint.spd(1),620(60,125))*/
+task {/*#E*/ 
+ 
+HeadingTargetInternal !x:= sThirdQuaterX;
+HeadingTargetInternal !y:= sThirdQuaterY;
+};
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindStartInternalPoint.spd(1),746(57,72))*/
+(2):
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindStartInternalPoint.spd(1),614(45,140))*/
+task {/*#E*/ 
+ 
+HeadingTargetInternal !x:= sSecondQuaterX;
+HeadingTargetInternal !y:= sSecondQuaterY;
+};
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindStartInternalPoint.spd(1),755(42,72))*/
+(1):
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindStartInternalPoint.spd(1),608(30,155))*/
+task {/*#E*/ 
+ 
+HeadingTargetInternal !x:= sFirstQuaterX;
+HeadingTargetInternal !y:= sFirstQuaterY;
+};
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindStartInternalPoint.spd(1),656(45,60))*/
+enddecision;
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindStartInternalPoint.spd(1),647(50,170))*/
+return /*#E*/ 
+;
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindStartInternalPoint.spd,4)*/
+endprocedure FindStartInternalPoint;
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindHeadingInternalTarget.spd,4)*/
+procedure FindHeadingInternalTarget;
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindHeadingInternalTarget.spd(1),125(50,20))*/
+start /*#E*/ 
+;
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindHeadingInternalTarget.spd(1),122(50,40))*/
+task {/*#E*/ 
+ 
+if ((HeadingTargetInternal!x = sFirstQuaterX) AND 
+    (HeadingTargetInternal!y = sFirstQuaterY)) {
+      HeadingTargetInternal!x :=  sSecondQuaterX;
+      HeadingTargetInternal!y :=  sSecondQuaterY;
+} 
+else {
+  if ((HeadingTargetInternal!x = sSecondQuaterX) AND 
+    (HeadingTargetInternal!y = sSecondQuaterY)) {
+      HeadingTargetInternal!x :=  sThirdQuaterX;
+      HeadingTargetInternal!y :=  sThirdQuaterY;
+  } 
+  else { 
+    if ((HeadingTargetInternal!x = sThirdQuaterX) AND 
+        (HeadingTargetInternal!y = sThirdQuaterY)) {
+         HeadingTargetInternal!x :=  sFourthQuaterX;
+         HeadingTargetInternal!y :=  sFourthQuaterY;
+    }  
+    else {
+      if ((HeadingTargetInternal!x = sFourthQuaterX) AND 
+          (HeadingTargetInternal!y = sFourthQuaterY)) {
+           HeadingTargetInternal!x :=  sFifthQuaterX;
+           HeadingTargetInternal!y :=  sFifthQuaterY;
+      }
+      else {
+        if ((HeadingTargetInternal!x = sFifthQuaterX) AND
+            (HeadingTargetInternal!y = sFifthQuaterY)) {
+             HeadingTargetInternal!x := sSixthQuaterX;
+             HeadingTargetInternal!y := sSixthQuaterY;
+        }  
+        else {
+          if ((HeadingTargetInternal!x = sSixthQuaterX) AND
+              (HeadingTargetInternal!y = sSixthQuaterY)) {
+               HeadingTargetInternal!x := sFirstQuaterX;
+               HeadingTargetInternal!y := sFirstQuaterY;
+          }
+        }
+      }
+    }  
+  }
+}
+};
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindHeadingInternalTarget.spd(1),116(55,145))*/
+return /*#E*/ 
+;
+/*#SDTREF(SDL,C:\BattleShips\BattleShips\Strategy1\FindHeadingInternalTarget.spd,4)*/
+endprocedure FindHeadingInternalTarget;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy2.sbk,4)*/
 block Strategy2;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy2.sbk(1),140(40,55))*/

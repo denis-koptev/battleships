@@ -25,3 +25,7 @@ There are 2 centers of mass now.
 ## Trajectory
 
 ![Trajectory](https://pp.userapi.com/c840339/v840339956/2848b/9wty-xC0GEs.jpg)
+
+## Attack logic (IK)
+
+Ships now can shoot only to ONE nearest enemy ship at the time.

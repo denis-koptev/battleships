@@ -29,3 +29,5 @@ There are 2 centers of mass now.
 ## Attack logic (IK)
 
 Ships now can shoot only to ONE nearest enemy ship at the time.
+
+If ship has got 1 health amount, it's going to make TARANUS!

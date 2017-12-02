@@ -21,3 +21,7 @@ Enabled control points for the internal trajectory.
 1/3 of ships will follow these points.
 
 There are 2 centers of mass now.
+
+## Trajectory
+
+![Trajectory](https://pp.userapi.com/c840339/v840339956/2848b/9wty-xC0GEs.jpg)

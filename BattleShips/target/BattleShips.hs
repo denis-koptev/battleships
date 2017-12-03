@@ -62,44 +62,8 @@
 #ifndef messageError
 #define messageError XHS_START+19
 #endif
-#ifndef SendData
-#define SendData XHS_START+20
-#endif
-#ifndef InitSocket
-#define InitSocket XHS_START+21
-#endif
-#ifndef SendDataComplete
-#define SendDataComplete XHS_START+22
-#endif
-#ifndef InitSocketComplete
-#define InitSocketComplete XHS_START+23
-#endif
 
 /*---------------------------- Process data -----------------------------*/
-#ifndef Main2_TIME
-#define Main2_TIME 0
-#endif
-#ifndef Main2_STACKSIZE
-#define Main2_STACKSIZE 1024
-#endif
-#ifndef Router_TIME
-#define Router_TIME 0
-#endif
-#ifndef Router_STACKSIZE
-#define Router_STACKSIZE 1024
-#endif
-#ifndef Main_TIME
-#define Main_TIME 0
-#endif
-#ifndef Main_STACKSIZE
-#define Main_STACKSIZE 1024
-#endif
-#ifndef DataSender_TIME
-#define DataSender_TIME 0
-#endif
-#ifndef DataSender_STACKSIZE
-#define DataSender_STACKSIZE 1024
-#endif
 #ifndef Main1_TIME
 #define Main1_TIME 0
 #endif

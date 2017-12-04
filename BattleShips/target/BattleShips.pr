@@ -8392,7 +8392,8 @@ start /*#E*/
  
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\SolveCollision.spd(1),638(160,65))*/
 /* Идем на таран в том числе,
-если осталась одна жизнь */
+если осталась одна жизнь,
+или мы последний корабль */
 ;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\SolveCollision.spd(1),125(75,35))*/
 decision /*#E*/ 
@@ -8411,7 +8412,8 @@ TORPEDO) = 0) AND
 (ShipsCurrState(index)!Ammunition(
 SHELL) = 0) AND
 (ShipsCurrState(index)!Ammunition(
-REPAIR) = 0)) OR (ShipsCurrState(index)!Resource = 1)
+REPAIR) = 0)) OR (ShipsCurrState(index)!Resource = 1) OR
+NumMyShips = 1
 ;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\SolveCollision.spd(1),158(50,50))*/
 (true):
@@ -9545,7 +9547,8 @@ else:
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\EnemyFound.spd(2),893(115,60))*/
 decision /*#E*/ 
  
-ShCurrSt!Resource = 1
+ShCurrSt!Resource = 1 OR
+NumMyShips = 1
 ;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\EnemyFound.spd(2),908(97,67))*/
 (true):
@@ -9708,10 +9711,10 @@ F3
 и устанавливаем следующей точкой для движения
 его координаты */
 :
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\EnemyFound.spd(5),926(75,35))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\EnemyFound.spd(5),926(75,45))*/
 task {/*#E*/ 
  
-for (i:=1, i<=NumVisibleShips, i+1) {
+for (i:=1, i<=length(EnemyShips), i+1) {
      DistBetweenShips := call
      getDistance(ShCurrSt!Coordinates!x,ShCurrSt!Coordinates!y,
      EnemyShips(i)!Coordinates!x,EnemyShips(i)!Coordinates!y);
@@ -9720,9 +9723,9 @@ for (i:=1, i<=NumVisibleShips, i+1) {
          ShootList := ShootList // mkstring(ShootPoint);
 }
 call SortShootList;
-EnemyToTaranus := EnemyShips(1);
+EnemyToTaranus := EnemyShips(ShootList(1)!Number);
 };
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\EnemyFound.spd(5),938(75,80))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\EnemyFound.spd(5),938(75,90))*/
 task {/*#E*/ 
  
 NextHeading := call
@@ -9934,7 +9937,7 @@ start /*#E*/
 task {/*#E*/ 
  
 Dist := 1000;
-for (i:=1, i<=NumVisibleShips, i+1) {
+for (i:=1, i<=length(EnemyShips), i+1) {
      DistBetweenShips := call
      getDistance(ShCurrSt!Coordinates!x,ShCurrSt!Coordinates!y,
      EnemyShips(i)!Coordinates!x,EnemyShips(i)!Coordinates!y);
@@ -9945,7 +9948,7 @@ for (i:=1, i<=NumVisibleShips, i+1) {
          Dist := DistBetweenShips;
 }
 call SortShootList;
-EnemyToShoot := EnemyShips(1);
+EnemyToShoot := EnemyShips(ShootList(1)!Number);
 DistBetweenShips := Dist;
 };
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\CanShootEnemy.spd(1),137(75,80))*/

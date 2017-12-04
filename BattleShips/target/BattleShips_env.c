@@ -127,95 +127,57 @@ extern void xOutEnv( xSignalNode *SignalOut )
   XENV_OUT_START
 
 
-  /* Signals going to the env via the channel SimSt1Int */
+  /* Signals going to the env via the channel St2MsgInt */
 
-    /* Signal FinishSimulation */
-    IF_OUT_SIGNAL(FinishSimulation,"FinishSimulation")
-      OUT_SIGNAL1(FinishSimulation,"FinishSimulation")
+    /* Signal messageLog */
+    IF_OUT_SIGNAL(messageLog,"messageLog")
+      OUT_SIGNAL1(messageLog,"messageLog")
 #ifdef OUT_SIGNAL_PAR
-      OUT_SIGNAL_PAR(Param1,yPDef_FinishSimulation,&xSrtR_SDL_Integer)
+      OUT_SIGNAL_PAR(Param1,yPDef_messageLog,&xSrtR_SDL_Charstring)
 #else
-      OUT_SIGNAL_TYPE_Integer(Param1,yPDef_FinishSimulation)
+      OUT_SIGNAL_TYPE_Charstring(Param1,yPDef_messageLog)
 #endif
-#ifdef OUT_SIGNAL_PAR
-      OUT_SIGNAL_PAR(Param2,yPDef_FinishSimulation,&ySrtR_tStrategyId)
-#else
-      OUT_SIGNAL_TYPE_tStrategyId(Param2,yPDef_FinishSimulation)
-#endif
-      OUT_SIGNAL2(FinishSimulation,"FinishSimulation")
+      OUT_SIGNAL2(messageLog,"messageLog")
       RELEASE_SIGNAL
-    END_IF_OUT_SIGNAL(FinishSimulation,"FinishSimulation")
+    END_IF_OUT_SIGNAL(messageLog,"messageLog")
 
-    /* Signal OrderSpeedRequest */
-    IF_OUT_SIGNAL(OrderSpeedRequest,"OrderSpeedRequest")
-      OUT_SIGNAL1(OrderSpeedRequest,"OrderSpeedRequest")
+    /* Signal messageError */
+    IF_OUT_SIGNAL(messageError,"messageError")
+      OUT_SIGNAL1(messageError,"messageError")
 #ifdef OUT_SIGNAL_PAR
-      OUT_SIGNAL_PAR(Param1,yPDef_OrderSpeedRequest,&ySrtR_tShipId)
+      OUT_SIGNAL_PAR(Param1,yPDef_messageError,&xSrtR_SDL_Charstring)
 #else
-      OUT_SIGNAL_TYPE_tShipId(Param1,yPDef_OrderSpeedRequest)
+      OUT_SIGNAL_TYPE_Charstring(Param1,yPDef_messageError)
 #endif
-#ifdef OUT_SIGNAL_PAR
-      OUT_SIGNAL_PAR(Param2,yPDef_OrderSpeedRequest,&ySrtR_tStrategyId)
-#else
-      OUT_SIGNAL_TYPE_tStrategyId(Param2,yPDef_OrderSpeedRequest)
-#endif
-#ifdef OUT_SIGNAL_PAR
-      OUT_SIGNAL_PAR(Param3,yPDef_OrderSpeedRequest,&ySrtR_tFactorAcceleration)
-#else
-      OUT_SIGNAL_TYPE_tFactorAcceleration(Param3,yPDef_OrderSpeedRequest)
-#endif
-      OUT_SIGNAL2(OrderSpeedRequest,"OrderSpeedRequest")
+      OUT_SIGNAL2(messageError,"messageError")
       RELEASE_SIGNAL
-    END_IF_OUT_SIGNAL(OrderSpeedRequest,"OrderSpeedRequest")
+    END_IF_OUT_SIGNAL(messageError,"messageError")
 
-    /* Signal OrderTurnRequest */
-    IF_OUT_SIGNAL(OrderTurnRequest,"OrderTurnRequest")
-      OUT_SIGNAL1(OrderTurnRequest,"OrderTurnRequest")
-#ifdef OUT_SIGNAL_PAR
-      OUT_SIGNAL_PAR(Param1,yPDef_OrderTurnRequest,&ySrtR_tShipId)
-#else
-      OUT_SIGNAL_TYPE_tShipId(Param1,yPDef_OrderTurnRequest)
-#endif
-#ifdef OUT_SIGNAL_PAR
-      OUT_SIGNAL_PAR(Param2,yPDef_OrderTurnRequest,&ySrtR_tStrategyId)
-#else
-      OUT_SIGNAL_TYPE_tStrategyId(Param2,yPDef_OrderTurnRequest)
-#endif
-#ifdef OUT_SIGNAL_PAR
-      OUT_SIGNAL_PAR(Param3,yPDef_OrderTurnRequest,&ySrtR_tHeadingChange)
-#else
-      OUT_SIGNAL_TYPE_tHeadingChange(Param3,yPDef_OrderTurnRequest)
-#endif
-      OUT_SIGNAL2(OrderTurnRequest,"OrderTurnRequest")
-      RELEASE_SIGNAL
-    END_IF_OUT_SIGNAL(OrderTurnRequest,"OrderTurnRequest")
+  /* Signals going to the env via the channel SimMsgInt */
 
-    /* Signal OrderFireRequest */
-    IF_OUT_SIGNAL(OrderFireRequest,"OrderFireRequest")
-      OUT_SIGNAL1(OrderFireRequest,"OrderFireRequest")
+    /* Signal messageLog */
+    IF_OUT_SIGNAL(messageLog,"messageLog")
+      OUT_SIGNAL1(messageLog,"messageLog")
 #ifdef OUT_SIGNAL_PAR
-      OUT_SIGNAL_PAR(Param1,yPDef_OrderFireRequest,&ySrtR_tShipId)
+      OUT_SIGNAL_PAR(Param1,yPDef_messageLog,&xSrtR_SDL_Charstring)
 #else
-      OUT_SIGNAL_TYPE_tShipId(Param1,yPDef_OrderFireRequest)
+      OUT_SIGNAL_TYPE_Charstring(Param1,yPDef_messageLog)
 #endif
-#ifdef OUT_SIGNAL_PAR
-      OUT_SIGNAL_PAR(Param2,yPDef_OrderFireRequest,&ySrtR_tStrategyId)
-#else
-      OUT_SIGNAL_TYPE_tStrategyId(Param2,yPDef_OrderFireRequest)
-#endif
-#ifdef OUT_SIGNAL_PAR
-      OUT_SIGNAL_PAR(Param3,yPDef_OrderFireRequest,&ySrtR_tNameWeaponry)
-#else
-      OUT_SIGNAL_TYPE_tNameWeaponry(Param3,yPDef_OrderFireRequest)
-#endif
-#ifdef OUT_SIGNAL_PAR
-      OUT_SIGNAL_PAR(Param4,yPDef_OrderFireRequest,&ySrtR_tStringShotsList)
-#else
-      OUT_SIGNAL_TYPE_tStringShotsList(Param4,yPDef_OrderFireRequest)
-#endif
-      OUT_SIGNAL2(OrderFireRequest,"OrderFireRequest")
+      OUT_SIGNAL2(messageLog,"messageLog")
       RELEASE_SIGNAL
-    END_IF_OUT_SIGNAL(OrderFireRequest,"OrderFireRequest")
+    END_IF_OUT_SIGNAL(messageLog,"messageLog")
+
+    /* Signal messageError */
+    IF_OUT_SIGNAL(messageError,"messageError")
+      OUT_SIGNAL1(messageError,"messageError")
+#ifdef OUT_SIGNAL_PAR
+      OUT_SIGNAL_PAR(Param1,yPDef_messageError,&xSrtR_SDL_Charstring)
+#else
+      OUT_SIGNAL_TYPE_Charstring(Param1,yPDef_messageError)
+#endif
+      OUT_SIGNAL2(messageError,"messageError")
+      RELEASE_SIGNAL
+    END_IF_OUT_SIGNAL(messageError,"messageError")
 
   /* Signals going to the env via the channel St1MsgInt */
 
@@ -305,196 +267,6 @@ extern SDL_Duration xInEnv ( SDL_Time Time_for_next_event )
 #endif
 
   XENV_IN_START
-
-  /* Signals comming from the env via the channel SimSt1Int */
-
-  /* Signal InitDataComplete */
-  IF_IN_SIGNAL(InitDataComplete,"InitDataComplete")
-    IN_SIGNAL1(InitDataComplete,"InitDataComplete")
-    IN_SIGNAL2(InitDataComplete,"InitDataComplete")
-  END_IF_IN_SIGNAL(InitDataComplete,"InitDataComplete")
-
-  /* Signal StartSimulation */
-  IF_IN_SIGNAL(StartSimulation,"StartSimulation")
-    IN_SIGNAL1(StartSimulation,"StartSimulation")
-#ifdef IN_SIGNAL_PAR
-    IN_SIGNAL_PAR(Param1,yPDef_StartSimulation,&xSrtR_SDL_Integer)
-#else
-    IN_SIGNAL_TYPE_Integer(Param1,yPDef_StartSimulation)
-#endif
-    IN_SIGNAL2(StartSimulation,"StartSimulation")
-  END_IF_IN_SIGNAL(StartSimulation,"StartSimulation")
-
-  /* Signal DestroyShip */
-  IF_IN_SIGNAL(DestroyShip,"DestroyShip")
-    IN_SIGNAL1(DestroyShip,"DestroyShip")
-#ifdef IN_SIGNAL_PAR
-    IN_SIGNAL_PAR(Param1,yPDef_DestroyShip,&ySrtR_tShipId)
-#else
-    IN_SIGNAL_TYPE_tShipId(Param1,yPDef_DestroyShip)
-#endif
-#ifdef IN_SIGNAL_PAR
-    IN_SIGNAL_PAR(Param2,yPDef_DestroyShip,&ySrtR_tStrategyId)
-#else
-    IN_SIGNAL_TYPE_tStrategyId(Param2,yPDef_DestroyShip)
-#endif
-#ifdef IN_SIGNAL_PAR
-    IN_SIGNAL_PAR(Param3,yPDef_DestroyShip,&ySrtR_tNameShip)
-#else
-    IN_SIGNAL_TYPE_tNameShip(Param3,yPDef_DestroyShip)
-#endif
-    IN_SIGNAL2(DestroyShip,"DestroyShip")
-  END_IF_IN_SIGNAL(DestroyShip,"DestroyShip")
-
-  /* Signal OrderSpeedResponse */
-  IF_IN_SIGNAL(OrderSpeedResponse,"OrderSpeedResponse")
-    IN_SIGNAL1(OrderSpeedResponse,"OrderSpeedResponse")
-#ifdef IN_SIGNAL_PAR
-    IN_SIGNAL_PAR(Param1,yPDef_OrderSpeedResponse,&ySrtR_tShipId)
-#else
-    IN_SIGNAL_TYPE_tShipId(Param1,yPDef_OrderSpeedResponse)
-#endif
-#ifdef IN_SIGNAL_PAR
-    IN_SIGNAL_PAR(Param2,yPDef_OrderSpeedResponse,&ySrtR_tStrategyId)
-#else
-    IN_SIGNAL_TYPE_tStrategyId(Param2,yPDef_OrderSpeedResponse)
-#endif
-    IN_SIGNAL2(OrderSpeedResponse,"OrderSpeedResponse")
-  END_IF_IN_SIGNAL(OrderSpeedResponse,"OrderSpeedResponse")
-
-  /* Signal OrderSpeedReject */
-  IF_IN_SIGNAL(OrderSpeedReject,"OrderSpeedReject")
-    IN_SIGNAL1(OrderSpeedReject,"OrderSpeedReject")
-#ifdef IN_SIGNAL_PAR
-    IN_SIGNAL_PAR(Param1,yPDef_OrderSpeedReject,&ySrtR_tShipId)
-#else
-    IN_SIGNAL_TYPE_tShipId(Param1,yPDef_OrderSpeedReject)
-#endif
-#ifdef IN_SIGNAL_PAR
-    IN_SIGNAL_PAR(Param2,yPDef_OrderSpeedReject,&ySrtR_tStrategyId)
-#else
-    IN_SIGNAL_TYPE_tStrategyId(Param2,yPDef_OrderSpeedReject)
-#endif
-    IN_SIGNAL2(OrderSpeedReject,"OrderSpeedReject")
-  END_IF_IN_SIGNAL(OrderSpeedReject,"OrderSpeedReject")
-
-  /* Signal OrderTurnResponse */
-  IF_IN_SIGNAL(OrderTurnResponse,"OrderTurnResponse")
-    IN_SIGNAL1(OrderTurnResponse,"OrderTurnResponse")
-#ifdef IN_SIGNAL_PAR
-    IN_SIGNAL_PAR(Param1,yPDef_OrderTurnResponse,&ySrtR_tShipId)
-#else
-    IN_SIGNAL_TYPE_tShipId(Param1,yPDef_OrderTurnResponse)
-#endif
-#ifdef IN_SIGNAL_PAR
-    IN_SIGNAL_PAR(Param2,yPDef_OrderTurnResponse,&ySrtR_tStrategyId)
-#else
-    IN_SIGNAL_TYPE_tStrategyId(Param2,yPDef_OrderTurnResponse)
-#endif
-    IN_SIGNAL2(OrderTurnResponse,"OrderTurnResponse")
-  END_IF_IN_SIGNAL(OrderTurnResponse,"OrderTurnResponse")
-
-  /* Signal OrderTurnReject */
-  IF_IN_SIGNAL(OrderTurnReject,"OrderTurnReject")
-    IN_SIGNAL1(OrderTurnReject,"OrderTurnReject")
-#ifdef IN_SIGNAL_PAR
-    IN_SIGNAL_PAR(Param1,yPDef_OrderTurnReject,&ySrtR_tShipId)
-#else
-    IN_SIGNAL_TYPE_tShipId(Param1,yPDef_OrderTurnReject)
-#endif
-#ifdef IN_SIGNAL_PAR
-    IN_SIGNAL_PAR(Param2,yPDef_OrderTurnReject,&ySrtR_tStrategyId)
-#else
-    IN_SIGNAL_TYPE_tStrategyId(Param2,yPDef_OrderTurnReject)
-#endif
-    IN_SIGNAL2(OrderTurnReject,"OrderTurnReject")
-  END_IF_IN_SIGNAL(OrderTurnReject,"OrderTurnReject")
-
-  /* Signal OrderFireResponse */
-  IF_IN_SIGNAL(OrderFireResponse,"OrderFireResponse")
-    IN_SIGNAL1(OrderFireResponse,"OrderFireResponse")
-#ifdef IN_SIGNAL_PAR
-    IN_SIGNAL_PAR(Param1,yPDef_OrderFireResponse,&ySrtR_tShipId)
-#else
-    IN_SIGNAL_TYPE_tShipId(Param1,yPDef_OrderFireResponse)
-#endif
-#ifdef IN_SIGNAL_PAR
-    IN_SIGNAL_PAR(Param2,yPDef_OrderFireResponse,&ySrtR_tStrategyId)
-#else
-    IN_SIGNAL_TYPE_tStrategyId(Param2,yPDef_OrderFireResponse)
-#endif
-    IN_SIGNAL2(OrderFireResponse,"OrderFireResponse")
-  END_IF_IN_SIGNAL(OrderFireResponse,"OrderFireResponse")
-
-  /* Signal OrderFireReject */
-  IF_IN_SIGNAL(OrderFireReject,"OrderFireReject")
-    IN_SIGNAL1(OrderFireReject,"OrderFireReject")
-#ifdef IN_SIGNAL_PAR
-    IN_SIGNAL_PAR(Param1,yPDef_OrderFireReject,&ySrtR_tShipId)
-#else
-    IN_SIGNAL_TYPE_tShipId(Param1,yPDef_OrderFireReject)
-#endif
-#ifdef IN_SIGNAL_PAR
-    IN_SIGNAL_PAR(Param2,yPDef_OrderFireReject,&ySrtR_tStrategyId)
-#else
-    IN_SIGNAL_TYPE_tStrategyId(Param2,yPDef_OrderFireReject)
-#endif
-    IN_SIGNAL2(OrderFireReject,"OrderFireReject")
-  END_IF_IN_SIGNAL(OrderFireReject,"OrderFireReject")
-
-  /* Signal ShipsCurrentState */
-  IF_IN_SIGNAL(ShipsCurrentState,"ShipsCurrentState")
-    IN_SIGNAL1(ShipsCurrentState,"ShipsCurrentState")
-#ifdef IN_SIGNAL_PAR
-    IN_SIGNAL_PAR(Param1,yPDef_ShipsCurrentState,&ySrtR_tStrategyId)
-#else
-    IN_SIGNAL_TYPE_tStrategyId(Param1,yPDef_ShipsCurrentState)
-#endif
-#ifdef IN_SIGNAL_PAR
-    IN_SIGNAL_PAR(Param2,yPDef_ShipsCurrentState,&ySrtR_tStringShipCurrentState)
-#else
-    IN_SIGNAL_TYPE_tStringShipCurrentState(Param2,yPDef_ShipsCurrentState)
-#endif
-    IN_SIGNAL2(ShipsCurrentState,"ShipsCurrentState")
-  END_IF_IN_SIGNAL(ShipsCurrentState,"ShipsCurrentState")
-
-  /* Signal VisibleShip */
-  IF_IN_SIGNAL(VisibleShip,"VisibleShip")
-    IN_SIGNAL1(VisibleShip,"VisibleShip")
-#ifdef IN_SIGNAL_PAR
-    IN_SIGNAL_PAR(Param1,yPDef_VisibleShip,&ySrtR_tStrategyId)
-#else
-    IN_SIGNAL_TYPE_tStrategyId(Param1,yPDef_VisibleShip)
-#endif
-#ifdef IN_SIGNAL_PAR
-    IN_SIGNAL_PAR(Param2,yPDef_VisibleShip,&ySrtR_tStringEnemyShip)
-#else
-    IN_SIGNAL_TYPE_tStringEnemyShip(Param2,yPDef_VisibleShip)
-#endif
-    IN_SIGNAL2(VisibleShip,"VisibleShip")
-  END_IF_IN_SIGNAL(VisibleShip,"VisibleShip")
-
-  /* Signal StrategyVictory */
-  IF_IN_SIGNAL(StrategyVictory,"StrategyVictory")
-    IN_SIGNAL1(StrategyVictory,"StrategyVictory")
-#ifdef IN_SIGNAL_PAR
-    IN_SIGNAL_PAR(Param1,yPDef_StrategyVictory,&ySrtR_tStrategyId)
-#else
-    IN_SIGNAL_TYPE_tStrategyId(Param1,yPDef_StrategyVictory)
-#endif
-    IN_SIGNAL2(StrategyVictory,"StrategyVictory")
-  END_IF_IN_SIGNAL(StrategyVictory,"StrategyVictory")
-
-  /* Signal StrategyLose */
-  IF_IN_SIGNAL(StrategyLose,"StrategyLose")
-    IN_SIGNAL1(StrategyLose,"StrategyLose")
-#ifdef IN_SIGNAL_PAR
-    IN_SIGNAL_PAR(Param1,yPDef_StrategyLose,&ySrtR_tStrategyId)
-#else
-    IN_SIGNAL_TYPE_tStrategyId(Param1,yPDef_StrategyLose)
-#endif
-    IN_SIGNAL2(StrategyLose,"StrategyLose")
-  END_IF_IN_SIGNAL(StrategyLose,"StrategyLose")
 
   XENV_IN_END
 

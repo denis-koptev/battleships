@@ -302,10 +302,10 @@ syntype tLUWeaponry = Integer
 endsyntype;
 /*#SDTREF(SDL,C:\Battleships\Packages\BasicTypes.sun(1),290(20,85))*/
 syntype tXCoordinate = Integer
-  constants 0:MaxXCoordinate
+  constants -200:MaxXCoordinate
 endsyntype;
 syntype tYCoordinate = Integer
-  constants 0:MaxYCoordinate
+  constants -100:MaxYCoordinate
 endsyntype;
 /*#SDTREF(SDL,C:\Battleships\Packages\BasicTypes.sun(1),374(80,100))*/
 syntype tFactorAcceleration = Real
@@ -9933,6 +9933,7 @@ start /*#E*/
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\CanShootEnemy.spd(1),197(75,25))*/
 task {/*#E*/ 
  
+Dist := 1000;
 for (i:=1, i<=NumVisibleShips, i+1) {
      DistBetweenShips := call
      getDistance(ShCurrSt!Coordinates!x,ShCurrSt!Coordinates!y,
@@ -9940,9 +9941,10 @@ for (i:=1, i<=NumVisibleShips, i+1) {
          ShootPoint!SortParam := float(DistBetweenShips);
          ShootPoint!Number := i;
          ShootList := ShootList // mkstring(ShootPoint);
+     if (Dist > DistBetweenShips)
+         Dist := DistBetweenShips;
 }
 call SortShootList;
-Dist := ShootList(1)!SortParam;
 EnemyToShoot := EnemyShips(1);
 DistBetweenShips := Dist;
 };
@@ -10029,7 +10031,8 @@ endprocedure CanShootEnemy;
 procedure SortShootList;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\SortShootList.spd(1),137(5,25))*/
 dcl
-   isMoreLeft boolean;
+   isMoreLeft boolean,
+   diff Integer;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\SortShootList.spd(1),116(55,20))*/
 start /*#E*/ 
  
@@ -10045,7 +10048,11 @@ task {/*#E*/
  
 for (i:=1, i<=length(ShootList)-1, i+1) {
   for (j := length(ShootList), j>=i+1, j-1) {
-     isMoreLeft := call IsOneMoreLeftThatAnother(EnemyShips(j),EnemyShips(j-1));
+     if (length(EnemyShips) < j)
+        diff := j - length(EnemyShips);
+     else
+        diff := 0;
+     isMoreLeft := call IsOneMoreLeftThanAnother(EnemyShips(j-diff),EnemyShips(j-1-diff));
      if (ShootList(j)!SortParam <  ShootList(j-1)!SortParam OR
           (ns2i(ShCurrSt!TypeShip) /= 4 AND 
             ShootList(j)!SortParam =  ShootList(j-1)!SortParam AND isMoreLeft = true)) {
@@ -10055,7 +10062,11 @@ for (i:=1, i<=length(ShootList)-1, i+1) {
      }
   }
   for (j := i+1, j<=length(ShootList)-1, j+1) {
-     isMoreLeft := call IsOneMoreLeftThatAnother(EnemyShips(j),EnemyShips(j+1));
+       if (length(EnemyShips) < j+1)
+        diff := j +1 - length(EnemyShips);
+     else
+        diff := 0;
+     isMoreLeft := call IsOneMoreLeftThanAnother(EnemyShips(j-diff),EnemyShips(j+1-diff));
      if (ShootList(j)!SortParam >  ShootList(j+1)!SortParam OR
           (ShCurrSt!TypeShip /= REPAIR_BOAT AND 
             ShootList(j)!SortParam =  ShootList(j+1)!SortParam AND isMoreLeft = true)) {
@@ -10075,14 +10086,15 @@ endprocedure SortShootList;
 procedure IsOneMoreLeftThanAnother
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd,1)*/
 ; fpar
-  Enemy1 tEnemyShip,
+  in Enemy1 tEnemyShip,
   Enemy2 tEnemyShip;
   returns isMoreLeft boolean;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),137(5,35))*/
 dcl
    NextPos tCoordinates,
    VectN, Vect1,Vect2 tCoordinates,
-   Angle1, Angle2 Real;
+   Angle1, Angle2 Real,
+   Quar1, Quar2 Integer;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),116(70,10))*/
 start /*#E*/ 
  
@@ -10108,78 +10120,206 @@ isMoreLeft := false;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),254(70,45))*/
 task {/*#E*/ 
  
-VectN!Coordinates!x := NextPos!Coordinates!x - ShCurrSt!Coordinates!x;
-VectN!Coordinates!y := NextPos!Coordinates!y - ShCurrSt!Coordinates!y;
-Vect1!Coordinates!x := Enemy1!Coordinates!x - ShCurrSt!Coordinates!x;
-Vect1!Coordinates!y := Enemy1!Coordinates!y - ShCurrSt!Coordinates!y;
-Vect2!Coordinates!x := Enemy2!Coordinates!x - ShCurrSt!Coordinates!x;
-Vect2!Coordinates!y := Enemy2!Coordinates!y - ShCurrSt!Coordinates!y;
+VectN!x := NextPos!x - ShCurrSt!Coordinates!x;
+VectN!y := NextPos!y - ShCurrSt!Coordinates!y;
+if (VectN!x = 0 AND VectN!y = 0)
+{  
+  VectN!x := 1;
+  VectN!y := 0;
+}
+Vect1!x := Enemy1!Coordinates!x - ShCurrSt!Coordinates!x;
+Vect1!y := Enemy1!Coordinates!y - ShCurrSt!Coordinates!y;
+Vect2!x := Enemy2!Coordinates!x - ShCurrSt!Coordinates!x;
+Vect2!y := Enemy2!Coordinates!y - ShCurrSt!Coordinates!y;
 };
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),266(70,70))*/
 task {/*#E*/ 
  
-Angle1 :=  float(VectN!Coordinates!x * Vect1!Coordinates!x +
-                        VectN!Coordinates!y * Vect1!Coordinates!y) /
-                float((call getDistance(0,0,VectN!Coordinates!x, VectN!Coordinates!y)) *
-                      (call getDistance(0,0,Vect1!Coordinates!x, Vect1!Coordinates!y)));
-Angle2 :=  float(VectN!Coordinates!x * Vect2!Coordinates!x +
-                        VectN!Coordinates!y * Vect2!Coordinates!y) /
-                float((call getDistance(0,0,VectN!Coordinates!x, VectN!Coordinates!y)) *
-                      (call getDistance(0,0,Vect2!Coordinates!x, Vect2!Coordinates!y)));
+Angle1 :=  float(VectN!x * Vect1!x + VectN!y * Vect1!y) /
+                float((call getDistance(0,0,VectN!x, VectN!y)) *
+                      (call getDistance(0,0,Vect1!x, Vect1!y)));
+Angle2 :=  float(VectN!x * Vect2!x + VectN!y * Vect2!y) /
+                float((call getDistance(0,0,VectN!x, VectN!y)) *
+                      (call getDistance(0,0,Vect2!x, Vect2!y)));
 };
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),278(70,100))*/
-task {/*#E*/ 
- 
-Angle1 := acos(Angle1);
-Angle2 := acos(Angle2);
-};
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),290(70,115))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),290(70,105))*/
 decision /*#E*/ 
  
-VectN!Coordinates!x * Vect1!Coordinates!y < 
-VectN!Coordinates!y * Vect1!Coordinates!x
+Angle1 = 1
 ;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),305(40,122))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),599(47,112))*/
 (true):
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),302(30,130))*/
-task {/*#E*/ 
-Angle1 := 6.28 - Angle1;};
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),293(82,127))*/
-(false):
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),290(70,115))*/
-enddecision;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),329(70,150))*/
-decision /*#E*/ 
- 
-VectN!Coordinates!x * Vect2!Coordinates!y < 
-VectN!Coordinates!y * Vect2!Coordinates!x
-;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),347(40,155))*/
-(true):
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),344(30,160))*/
-task {/*#E*/ 
-Angle2 := 6.28 - Angle2;};
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),332(82,162))*/
-(false):
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),329(70,150))*/
-enddecision;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),353(70,175))*/
-decision /*#E*/ 
- 
-Angle1 <= Angle2
-;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),368(40,180))*/
-(true):
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),218(35,185))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),218(40,120))*/
 task {/*#E*/ 
 isMoreLeft := true;};
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),371(82,187))*/
-(false):
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),353(70,175))*/
-enddecision;
-/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),131(75,215))*/
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),131(45,140))*/
 return /*#E*/ 
 ;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),605(100,117))*/
+(false):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),602(90,120))*/
+join /*#E*/ 
+R1 
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),377(165,80))*/
+/* косинусы углов */
+
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),380(5,90))*/
+/* 1) Определяем четверь
+2) Сравниваем четверти
+3) Если в одной, то смотрим косинус угла */
+;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),290(70,105))*/
+enddecision;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),614(75,135))*/
+connection /*#E*/ 
+R2:
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),617(70,155))*/
+decision /*#E*/ 
+ 
+Quar1 < Quar2
+;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),635(47,160))*/
+(true):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),629(40,165))*/
+task {/*#E*/ 
+isMoreLeft := true;};
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),644(82,167))*/
+(false):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),641(70,175))*/
+decision /*#E*/ 
+ 
+Quar1 = Quar2
+;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),680(82,187))*/
+(true):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),659(70,190))*/
+decision /*#E*/ 
+ 
+(Angle1 > Angle2 AND Quar1 < 3) OR 
+(Angle1 < Angle2 AND Quar1 > 2)
+;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),677(85,200))*/
+(true):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),671(70,205))*/
+task {/*#E*/ 
+isMoreLeft := true;};
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),668(55,197))*/
+(false):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),659(70,190))*/
+enddecision;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),656(47,182))*/
+(false):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),641(70,175))*/
+enddecision;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),617(70,155))*/
+enddecision;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),632(45,215))*/
+return /*#E*/ 
+;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(1),614(75,135))*/
+endconnection R2;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),395(85,10))*/
+connection /*#E*/ 
+R1:
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),398(80,30))*/
+decision /*#E*/ 
+ 
+Angle1 > 0
+;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),443(47,37))*/
+(true):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),410(40,45))*/
+decision /*#E*/ 
+ 
+VectN!x * Vect1!y < 
+VectN!y * Vect1!x
+;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),425(32,60))*/
+(false):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),419(25,70))*/
+task {/*#E*/ 
+Quar1 := 1;};
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),428(67,52))*/
+(true):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),422(55,70))*/
+task {/*#E*/ 
+Quar1 := 4;};
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),410(40,45))*/
+enddecision;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),446(125,42))*/
+(false):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),440(110,45))*/
+decision /*#E*/ 
+ 
+VectN!x * Vect1!y < 
+VectN!y * Vect1!x
+;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),452(102,52))*/
+(false):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),434(95,70))*/
+task {/*#E*/ 
+Quar1 := 2;};
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),455(137,60))*/
+(true):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),431(125,70))*/
+task {/*#E*/ 
+Quar1 := 3;};
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),440(110,45))*/
+enddecision;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),398(80,30))*/
+enddecision;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),542(80,105))*/
+decision /*#E*/ 
+ 
+Angle2 > 0
+;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),548(47,112))*/
+(true):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),533(40,120))*/
+decision /*#E*/ 
+ 
+VectN!x * Vect2!y < 
+VectN!y * Vect2!x
+;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),557(32,135))*/
+(false):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),524(25,145))*/
+task {/*#E*/ 
+Quar2 := 1;};
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),560(67,127))*/
+(true):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),521(55,145))*/
+task {/*#E*/ 
+Quar2 := 4;};
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),533(40,120))*/
+enddecision;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),551(125,117))*/
+(false):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),530(110,120))*/
+decision /*#E*/ 
+ 
+VectN!x * Vect2!y < 
+VectN!y * Vect2!x
+;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),566(102,127))*/
+(false):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),518(95,145))*/
+task {/*#E*/ 
+Quar2 := 2;};
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),569(137,135))*/
+(true):
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),515(125,145))*/
+task {/*#E*/ 
+Quar2 := 3;};
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),530(110,120))*/
+enddecision;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),542(80,105))*/
+enddecision;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),584(85,170))*/
+join /*#E*/ 
+R2;
+/*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd(2),395(85,10))*/
+endconnection R1;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\IsOneMoreLeftThanAnother.spd,4)*/
 endprocedure IsOneMoreLeftThanAnother;
 /*#SDTREF(SDL,C:\Battleships\BattleShips\Strategy1\OutputOrder.spd,4)*/

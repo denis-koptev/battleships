@@ -877,8 +877,8 @@ extern z_BasicTypes_1F_tXCoordinate yTstI_z_BasicTypes_1F_tXCoordinate (
 #define yTstI_z_BasicTypes_1F_tXCoordinate(yExpr)  yExpr
 #endif
 #ifndef ANY_z_BasicTypes_1F_tXCoordinate
-#define ANY_z_BasicTypes_1F_tXCoordinate (z_BasicTypes_1F_tXCoordinate)(SDL_INTEGER_LIT(0) + \
-  GETINTRAND%(SDL_INTEGER_LIT(200)+1))
+#define ANY_z_BasicTypes_1F_tXCoordinate (z_BasicTypes_1F_tXCoordinate)(SDL_INTEGER_LIT(-200) + \
+  GETINTRAND%(SDL_INTEGER_LIT(200) - SDL_INTEGER_LIT(-200)+1))
 #endif
 
 /*****
@@ -911,8 +911,8 @@ extern z_BasicTypes_1G_tYCoordinate yTstI_z_BasicTypes_1G_tYCoordinate (
 #define yTstI_z_BasicTypes_1G_tYCoordinate(yExpr)  yExpr
 #endif
 #ifndef ANY_z_BasicTypes_1G_tYCoordinate
-#define ANY_z_BasicTypes_1G_tYCoordinate (z_BasicTypes_1G_tYCoordinate)(SDL_INTEGER_LIT(0) + \
-  GETINTRAND%(SDL_INTEGER_LIT(100)+1))
+#define ANY_z_BasicTypes_1G_tYCoordinate (z_BasicTypes_1G_tYCoordinate)(SDL_INTEGER_LIT(-100) + \
+  GETINTRAND%(SDL_INTEGER_LIT(100) - SDL_INTEGER_LIT(-100)+1))
 #endif
 
 /*****
